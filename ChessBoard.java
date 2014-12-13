@@ -77,7 +77,7 @@ public class ChessBoard {
         return false;
     }
     
-    private void createChess(int num) { //TODO 2 no good
+    private void createChess(int num) { //TODO 2  good
         int count=0;
         for (int i = 3; i >= 0; i--)
             for (int j = 3; j >= 0; j--)

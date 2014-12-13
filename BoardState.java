@@ -114,7 +114,7 @@ public class BoardState {
     
     public double getHeuristicScore(){
         double score=0;
-        for(int i=1;i<=16;i++){
+        for(int i=1;i<=8;i++){
             score=score+this.getStateHeuristic(i);
         }
         score=score / 8.0;
