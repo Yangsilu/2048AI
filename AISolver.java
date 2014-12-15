@@ -14,6 +14,16 @@ import java.util.List;
  */
 public class AISolver {
     int[][] board = new int[4][4];
+    double r;
+    int d;
+    int mode;
+    
+    public AISolver(double hr, int hd, int hm) {
+        r = hr;
+        d = hd;
+        mode = 2;
+        if (hm == 1) mode = 8;
+    }
     
     public void setBoard(int[][] state) {
         for (int i = 0; i < 4; i++)
@@ -21,7 +31,7 @@ public class AISolver {
                 board[i][j] = state[i][j];
     }
     
-    public String minMaxAI(double r) {
+    public String minMaxAI() {
         double max = 0;
         int w = -1;
 //        BoardState l1 = new BoardState(board, r);
@@ -37,7 +47,7 @@ public class AISolver {
 //                int y = j.get(1);
 //                l2.createChess(x, y);
 //                BoardState l3 = new BoardState(l2.getNextState(), r);
-//                min = Math.min(min, l3.getStateHeuristic(1));
+//                min = Math.min(min, l3.getHeuristicScore());
 //            }
 //            if (empty.isEmpty()) min = 0;
 //            if (min > max) {
@@ -45,9 +55,10 @@ public class AISolver {
 //                max = min;
 //            }
 //        }
-        double[] zeren=minimax(board,2,r);
+        BoardState tb = new BoardState(board, r);
+        double[] zeren=minimax(board,d,r);
         for(int i=0;i<4;i++){
-            if(max<=zeren[i]){
+            if(max<=zeren[i] && tb.moveChess(i)){
                 max=zeren[i];
                 w=i;
             }
@@ -75,8 +86,8 @@ public class AISolver {
             for(int i=0;i<4;i++){
                 BoardState l=new BoardState(mat, r);
                 if (l.moveChess(i)){
-                     BoardState l2 = new BoardState(l.getNextState(), 1);
-                    NodeScore[i]=l2.getHeuristicScore();
+                    BoardState l2 = new BoardState(l.getNextState(), r);
+                    NodeScore[i]=l2.getHeuristicScore(mode);
                 }else{
                     NodeScore[i]=Double.MIN_VALUE;
                 }
@@ -100,13 +111,13 @@ public class AISolver {
                         BoardState l2 = new BoardState(l.getNextState(), r);
                         
                         l2.createChess(x, y);
-                        double minOmax;
                         double minOfmax=Double.MIN_VALUE;
                         double[] minOfmaxlist=minimax( l2.getNextState(), depth-1 ,r);
                         for(int silu=0;silu<4;silu++){
                             if (minOfmaxlist[silu]>minOfmax)
                                 minOfmax=minOfmaxlist[silu];
                         }
+                        if (empty.isEmpty()) minOfmax = Double.MIN_VALUE;
                         mins = Math.min(mins,minOfmax);
                     }
                     NodeScore[i]=mins;

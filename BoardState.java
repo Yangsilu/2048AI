@@ -112,12 +112,11 @@ public class BoardState {
         return board;
     }
     
-    public double getHeuristicScore(){
+    public double getHeuristicScore(int mode){
         double score=0;
-        for(int i=1;i<=8;i++){
-            score=score+this.getStateHeuristic(i);
+        for(int i=1;i<=mode;i++){
+            score=Math.max(score,this.getStateHeuristic(i));
         }
-        score=score / 8.0;
         return score;
     }
     

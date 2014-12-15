@@ -18,11 +18,11 @@ public class AI2048 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.print("Please Choose the mode: 1 -- People, 2 -- AI:");
+        System.out.print("Please Choose the mode: 1 -- People, 2 -- AI, 3 --BatAI :");
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         try {
             String b = bf.readLine();
-            if (b.equals("1") || b.equals("2")) {
+            if (b.equals("1") || b.equals("2") ||b.equals("3")) {
                 AI2048 game = new AI2048();
                 game.run(b);
             }
@@ -35,7 +35,11 @@ public class AI2048 {
         if (mode.equals("1")) {
             this.testPeople();
         } else {
-            this.testAI();
+            if (mode.equals("2")) {
+                this.testAI();
+            } else {
+                this.testBatAI();
+            }
         }
     }
     
@@ -62,12 +66,12 @@ public class AI2048 {
         Scanner scanner=new Scanner(System.in);
         String b = scanner.next();
         ChessBoard cb = new ChessBoard(Integer.valueOf(b));
-        AISolver solver = new AISolver();
+        AISolver solver = new AISolver(0.2, 2, 1);
         int count = 0;
         while (cb.getState() == 0) {
             cb.printBoard();
             solver.setBoard(cb.getChessBoard());
-            b = solver.minMaxAI(0.5);
+            b = solver.minMaxAI();
             System.out.println("AI Choose the move " + b);
             count++;
 
@@ -85,5 +89,69 @@ public class AI2048 {
         cb.printBoard();
         if (cb.getState() == 1) System.out.println("Used " + count + " Steps to Win!");
         if (cb.getState() == -1) System.out.println("Used " + count + " Steps to Lose!");
+    }
+    
+    private void testBatAI() {
+        System.out.print("Please type in n, d, r, heu, target:");
+        Scanner scanner=new Scanner(System.in);
+        int n = scanner.nextInt();
+        int d = scanner.nextInt();
+        double r = scanner.nextDouble();
+        int heu = scanner.nextInt();
+        int target = scanner.nextInt();
+        long start = System.currentTimeMillis();
+        int success = 0;
+        int step = 0;
+        int[] stop = new int[13];
+        
+        for (int i = 0; i < n; i++) {
+            
+            System.out.println(i);
+            ChessBoard cb = new ChessBoard(target);
+            AISolver solver = new AISolver(r, d, heu);
+            int count = 0;
+            while (cb.getState() == 0) {
+                solver.setBoard(cb.getChessBoard());
+                String b = solver.minMaxAI();
+                count++;
+                if (b.equals("w")) cb.upMove();
+                if (b.equals("s")) cb.downMove();
+                if (b.equals("a")) cb.leftMove();
+                if (b.equals("d")) cb.rightMove();
+            }
+            
+            if (cb.getState() == 1) {
+                success++;
+                step += count;
+            }
+            int max = cb.chessMax();
+            int num = 2;
+            for (int j = 0; j < 13; j++) {
+                if (num == max) stop[j]++;
+                num *= 2;
+            }
+            
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.print("The success number is ");
+        System.out.println(success);
+        
+        System.out.print("Each test keys cost ");
+        System.out.print(((double)(end - start)) / n);
+        System.out.println(" ms.");
+        
+        System.out.print("Avg steps is ");
+        System.out.println(step / success);
+        
+        int num = 2;
+        for (int j = 0; j < 13; j++) {
+  //          System.out.print("Stop in ");
+            System.out.print(stop[j]);
+            System.out.print("  ");
+  //          System.out.print(" is ");
+  //          System.out.println(stop[j]);
+            num *= 2;
+        }
     }
 }

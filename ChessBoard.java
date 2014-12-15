@@ -40,6 +40,14 @@ public class ChessBoard {
         }
     }
     
+    public int chessMax() {
+        int max = 0;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                max = Math.max(max, board[i][j]);
+        return max;
+    }
+    
     private boolean moveChess(int derection) {     //0-up, 1-left, 2-down, 3-right  //加得分系统
         int[][] tmp = new int[4][4];
         for (int i = 0; i < 4; i++)
@@ -149,11 +157,13 @@ public class ChessBoard {
             if (state == -1) System.out.println("You lost this game already!");
         } else {
             boolean flag = this.moveChess(derection);
+            int haha = 1;
             if (this.checkWin()) {
-                System.out.println("NB! You Win!");
+                haha = 1;
+                //System.out.println("NB! You Win!");
             } else {
                 if (flag) this.createChess(2);
-                if (this.checkLose())  System.out.println("SB! You Lose!");
+               if (this.checkLose()) haha =2; //System.out.println("SB! You Lose!");
             }
         }
     }
